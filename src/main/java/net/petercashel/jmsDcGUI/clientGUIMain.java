@@ -2,17 +2,12 @@ package net.petercashel.jmsDcGUI;
 
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
 import javax.swing.JTextPane;
-import javax.swing.JToolBar;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import javax.swing.text.DefaultCaret;
@@ -24,15 +19,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.JSeparator;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import net.petercashel.commonlib.threading.threadManager;
-import java.awt.FlowLayout;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.factories.FormFactory;
-import com.jgoodies.forms.layout.RowSpec;
+import java.awt.GridLayout;
+import javax.swing.SwingConstants;
 
 public class clientGUIMain {
 
@@ -53,11 +44,7 @@ public class clientGUIMain {
 	static String lastLine = "";
 	public static PrintStream out = null;
 	public static PrintStream err = null;
-
-	private JSeparator separator;
-	private JSeparator separator_1;
 	static JCheckBox chckbxCLIMode;
-	private JSeparator separator_2;
 	private JPanel panel;
 	
 	
@@ -76,6 +63,7 @@ public class clientGUIMain {
 		threadManager.getInstance().addRunnable((new Runnable() {
 			public void run() {
 				try {
+					@SuppressWarnings("unused")
 					clientGUIMain window = new clientGUIMain();					
 					
 					err = new PrintStreamWrapper(System.err, true);
@@ -84,7 +72,7 @@ public class clientGUIMain {
 					System.setErr(err);
 					System.setOut(out);
 					
-					window.frame.setVisible(true);
+					clientGUIMain.frame.setVisible(true);
 					
 					threadManager.getInstance().addRunnable((new Runnable() {
 						public void run() {
@@ -108,6 +96,7 @@ public class clientGUIMain {
 
 	/**
 	 * Create the application.
+	 * @wbp.parser.entryPoint
 	 */
 	public clientGUIMain() {
 		initialize();
@@ -130,94 +119,59 @@ public class clientGUIMain {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("JMSDd Client");
 		
-		JToolBar toolBar = new JToolBar();
-		toolBar.setFont(MONOSPACED);
-		toolBar.setFloatable(false);
-		toolBar.setMinimumSize(new Dimension(10, 80));
-		frame.getContentPane().add(toolBar, BorderLayout.NORTH);
-		
 		panel = new JPanel();
-		toolBar.add(panel);
-		panel.setLayout(new FormLayout(new ColumnSpec[] {
-				ColumnSpec.decode("8px"),
-				ColumnSpec.decode("48px"),
-				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
-				ColumnSpec.decode("108px"),
-				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
-				ColumnSpec.decode("1px"),
-				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
-				ColumnSpec.decode("48px"),
-				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
-				ColumnSpec.decode("64px"),
-				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
-				ColumnSpec.decode("1px"),
-				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
-				ColumnSpec.decode("192px"),
-				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
-				ColumnSpec.decode("1px"),
-				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
-				ColumnSpec.decode("128px"),},
-			new RowSpec[] {
-				FormFactory.LINE_GAP_ROWSPEC,
-				RowSpec.decode("23px"),}));
+		frame.getContentPane().add(panel, BorderLayout.NORTH);
+		panel.setLayout(new GridLayout(0, 6, 5, 0));
 		
 		lblServer = new JLabel("Server:");
-		panel.add(lblServer, "2, 2, left, center");
-		lblServer.setMinimumSize(new Dimension(160,40));
-		lblServer.setSize(new Dimension(160,40));
-		
-		textField_ServerAddress = new JTextField();
-		panel.add(textField_ServerAddress, "4, 2, left, center");
-		textField_ServerAddress.setColumns(10);
-		textField_ServerAddress.setMinimumSize(new Dimension(120,40));
-		textField_ServerAddress.setMaximumSize(new Dimension(120,40));
-		textField_ServerAddress.setText(host);
-		
-		separator = new JSeparator();
-		panel.add(separator, "6, 2, left, center");
-		
-		lblPort = new JLabel("Port:");
-		panel.add(lblPort, "8, 2, left, center");
-		lblPort.setMinimumSize(new Dimension(80,40));
-		lblPort.setSize(new Dimension(80,40));
-		
-		textField_ServerPort = new JTextField();
-		panel.add(textField_ServerPort, "10, 2, left, center");
-		textField_ServerPort.setColumns(10);
-		textField_ServerPort.setMinimumSize(new Dimension(60,40));
-		textField_ServerPort.setMaximumSize(new Dimension(60,40));
-		
-		separator_1 = new JSeparator();
-		panel.add(separator_1, "12, 2, left, center");
-		
-		chckbxCLIMode = new JCheckBox("Unix Socket Mode");
-		chckbxCLIMode.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				CLIMode = chckbxCLIMode.isSelected();
-				if (chckbxCLIMode.isSelected()) {
-					chckbxCLIMode.setText("Unix Socket Mode");
-				} else {
-					chckbxCLIMode.setText("Network Client Mode");
-				}
-			}
-		});
-		panel.add(chckbxCLIMode, "14, 2, left, top");
-		
-		separator_2 = new JSeparator();
-		panel.add(separator_2, "16, 2, left, center");
-		
-		
-		btnConnect = new JButton("Connect");
-		panel.add(btnConnect, "18, 2, left, top");
-		btnConnect.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				host = textField_ServerAddress.getText();
-				port = Integer.parseInt(textField_ServerPort.getText());
-				reconnect();
-			}
-		});
-		btnConnect.setEnabled(false);
-		btnConnect.setEnabled(false);
+		lblServer.setHorizontalAlignment(SwingConstants.TRAILING);
+		panel.add(lblServer);
+		//		lblServer.setMinimumSize(new Dimension(160,40));
+		//		lblServer.setSize(new Dimension(160,40));
+				
+				textField_ServerAddress = new JTextField();
+				panel.add(textField_ServerAddress);
+				textField_ServerAddress.setColumns(10);
+				//		textField_ServerAddress.setMinimumSize(new Dimension(120,40));
+				//		textField_ServerAddress.setMaximumSize(new Dimension(120,40));
+						textField_ServerAddress.setText(host);
+						
+						lblPort = new JLabel("Port:");
+						lblPort.setHorizontalAlignment(SwingConstants.TRAILING);
+						panel.add(lblPort);
+						//		lblPort.setMinimumSize(new Dimension(80,40));
+						//		lblPort.setSize(new Dimension(80,40));
+								
+								textField_ServerPort = new JTextField();
+								textField_ServerPort.setText("14444");
+								panel.add(textField_ServerPort);
+								textField_ServerPort.setColumns(10);
+								
+								chckbxCLIMode = new JCheckBox("Unix Socket Mode");
+								chckbxCLIMode.addActionListener(new ActionListener() {
+									public void actionPerformed(ActionEvent e) {
+										CLIMode = chckbxCLIMode.isSelected();
+										if (chckbxCLIMode.isSelected()) {
+											chckbxCLIMode.setText("Unix Socket Mode");
+										} else {
+											chckbxCLIMode.setText("Network Client Mode");
+										}
+									}
+								});
+								panel.add(chckbxCLIMode);
+								
+								
+								btnConnect = new JButton("Connect");
+								panel.add(btnConnect);
+								btnConnect.addActionListener(new ActionListener() {
+									public void actionPerformed(ActionEvent e) {
+										host = textField_ServerAddress.getText();
+										port = Integer.parseInt(textField_ServerPort.getText());
+										reconnect();
+									}
+								});
+								btnConnect.setEnabled(false);
+								btnConnect.setEnabled(false);
 		
 		textField = new JTextField();
 		textField.setFont(new Font("Monospaced", Font.PLAIN, 14));

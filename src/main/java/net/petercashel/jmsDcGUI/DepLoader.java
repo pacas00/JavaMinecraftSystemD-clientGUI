@@ -22,14 +22,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -48,6 +45,7 @@ public class DepLoader {
 	public static void main(String[] args) throws IOException {
 		boolean isDaemonRun = false;
 		try {
+			@SuppressWarnings({ "unused", "rawtypes" })
 			Class cls = DepLoader.class.forName("net.petercashel.jmsDd.daemonMain");
 			isDaemonRun = true;
 		}
@@ -77,6 +75,8 @@ public class DepLoader {
 					FileOutputStream fos;
 					fos = new FileOutputStream(maven305);
 					fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+					fos.flush();
+					fos.close();
 				}
 				catch (FileNotFoundException e) {
 					throw e;
@@ -109,6 +109,8 @@ public class DepLoader {
 					FileOutputStream fos;
 					fos = new FileOutputStream(jcabi_aether);
 					fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+					fos.flush();
+					fos.close();
 				}
 				catch (FileNotFoundException e) {
 					throw e;
@@ -187,6 +189,7 @@ public class DepLoader {
 	// http://stackoverflow.com/a/60766 - Credit to http://stackoverflow.com/users/2443/allain-lalonde
 	// /////////////////////////////////////////////////////////////////////////////////////////////
 	//
+	@SuppressWarnings("rawtypes")
 	private static final Class[] parameters = new Class[] { URL.class };
 
 	public static void addFile(String s) throws IOException {
@@ -198,6 +201,7 @@ public class DepLoader {
 		addURL(f.toURI().toURL());
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void addURL(URL u) throws IOException {
 		URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 		Class sysclass = URLClassLoader.class;
