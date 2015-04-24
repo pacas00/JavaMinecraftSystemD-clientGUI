@@ -1,0 +1,100 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+		maven {
+            name = "HTB3"
+            url = "http://htb2.petercashel.net:81"
+        }
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'net.petercashel.JMSDd'
+version = '1.0.1'
+archivesBaseName = 'JMSDd-clientGUI'
+buildDir = 'target'
+
+defaultTasks 'build', 'install'
+
+repositories {
+        mavenCentral()
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+		maven {
+            name = "HTB3"
+            url = "http://htb2.petercashel.net:81"
+        }
+    }
+
+dependencies {
+    compile "io.netty:netty-all:5.0.0.Alpha2"
+	compile "com.google.code.gson:gson:2.3.1"
+    compile "net.petercashel.JMSDd:JMSDd-Common:1.0.1"
+	compile "com.jcabi:jcabi-aether:0.10.1"
+	compile "org.apache.maven:maven-core:3.0.5"
+}
+
+jar {
+	manifest { 
+    attributes "Main-Class": "net.petercashel.jmsDcGUI.DepLoader"
+  }  
+}
+
+uploadArchives {
+    repositories {
+		mavenDeployer {
+            repository(url: 'file:///home/maven/public')
+			// This is just the pom data for the maven repo
+                pom {
+                    groupId = project.group
+                    version = project.version
+                    artifactId = project.archivesBaseName
+                    project {
+                        name project.archivesBaseName
+                        packaging 'jar'
+                        description 'JavaMinecraftSystemD-clientGUI'
+                        url 'https://github.com/pacas00/JavaMinecraftSystemD-clientGUI'
+
+                        scm {
+                            url 'https://github.com/pacas00/JavaMinecraftSystemD-clientGUI'
+                            connection 'scm:git:git://github.com/pacas00/JavaMinecraftSystemD-clientGUI.git'
+                            developerConnection 'scm:git:git@github.com:pacas00/JavaMinecraftSystemD-clientGUI.git'
+                        }
+
+                        issueManagement {
+                            system 'github'
+                            url 'https://github.com/pacas00/JavaMinecraftSystemD-clientGUI/issues'
+                        }
+
+                        licenses {
+                            license {
+                                name 'Apache Software License, version 2.0'
+                                url 'http://www.apache.org/licenses/LICENSE-2.0'
+                                distribution 'repo'
+                            }
+                        }
+
+                        developers {
+                            developer {
+                                id 'pacas00'
+                                name 'Peter Cashel'
+                                roles { role 'developer' }
+                            }
+                        }
+                    }
+                }
+        }
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
+}
