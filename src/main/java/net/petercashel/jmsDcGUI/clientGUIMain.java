@@ -7,9 +7,11 @@ import java.io.IOException;
 import java.io.PrintStream;
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
+import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
+import javax.swing.text.AbstractDocument;
 import javax.swing.text.DefaultCaret;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -28,7 +30,7 @@ import javax.swing.SwingConstants;
 public class clientGUIMain {
 
 	public static JFrame frame;
-	private static JTextPane editorPane;
+	private static JTextArea editorPane;
 	private static final Font MONOSPACED = new Font("Monospaced", 0, 13);
     public static boolean run = true;
 	public static String host = "127.0.0.1";
@@ -195,12 +197,15 @@ public class clientGUIMain {
 		scrollPane = new JScrollPane();
 		frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
 		
-		editorPane = new JTextPane();
+		editorPane = new JTextArea();
         editorPane.setBackground(Color.DARK_GRAY);
         editorPane.setBackground(new Color(70, 130, 180, 255));
         editorPane.setForeground(new Color(0, 0, 0, 255));
         editorPane.setEditable(false);
+        editorPane.setLineWrap(true);
+        editorPane.setWrapStyleWord(true);
         editorPane.setFont(MONOSPACED);
+        ((AbstractDocument) editorPane.getDocument()).setDocumentFilter(new ConsoleLogDocumentFilter(editorPane, 240));
         
         DefaultCaret caret = (DefaultCaret) editorPane.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
