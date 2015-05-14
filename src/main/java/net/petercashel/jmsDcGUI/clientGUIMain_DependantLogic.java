@@ -48,9 +48,12 @@ public class clientGUIMain_DependantLogic {
 				port = getDefault(getJSONObject(cfg, "clientSettings"), "serverPort", 14444);
 				CLIMode = getDefault(getJSONObject(cfg, "clientSettings"), "clientCLIMode", true);
 				if (CLIMode) {
-					chckbxCLIMode.setText("Unix Socket Mode");
-				} else {
-					chckbxCLIMode.setText("Network Client Mode");
+					chckbxCLIMode.setSelected(CLIMode);
+					if (chckbxCLIMode.isSelected()) {
+						chckbxNetMode.setSelected(false);
+					} else {
+						chckbxNetMode.setSelected(true);
+					}
 				}
 				getDefault(getJSONObject(cfg, "clientSettings"), "clientCLIPath", "");
 

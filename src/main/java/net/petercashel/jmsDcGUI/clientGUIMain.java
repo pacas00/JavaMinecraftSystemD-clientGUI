@@ -26,6 +26,7 @@ import javax.swing.JPanel;
 import net.petercashel.commonlib.threading.threadManager;
 import java.awt.GridLayout;
 import javax.swing.SwingConstants;
+import java.awt.FlowLayout;
 
 public class clientGUIMain {
 
@@ -48,6 +49,7 @@ public class clientGUIMain {
 	public static PrintStream err = null;
 	static JCheckBox chckbxCLIMode;
 	private JPanel panel;
+	static JCheckBox chckbxNetMode;
 	
 	
 	
@@ -123,7 +125,7 @@ public class clientGUIMain {
 		
 		panel = new JPanel();
 		frame.getContentPane().add(panel, BorderLayout.NORTH);
-		panel.setLayout(new GridLayout(0, 6, 5, 0));
+		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		lblServer = new JLabel("Server:");
 		lblServer.setHorizontalAlignment(SwingConstants.TRAILING);
@@ -133,7 +135,7 @@ public class clientGUIMain {
 				
 				textField_ServerAddress = new JTextField();
 				panel.add(textField_ServerAddress);
-				textField_ServerAddress.setColumns(10);
+				textField_ServerAddress.setColumns(20);
 				//		textField_ServerAddress.setMinimumSize(new Dimension(120,40));
 				//		textField_ServerAddress.setMaximumSize(new Dimension(120,40));
 						textField_ServerAddress.setText(host);
@@ -147,19 +149,34 @@ public class clientGUIMain {
 								textField_ServerPort = new JTextField();
 								textField_ServerPort.setText("14444");
 								panel.add(textField_ServerPort);
-								textField_ServerPort.setColumns(10);
+								textField_ServerPort.setColumns(6);
 								
 								chckbxCLIMode = new JCheckBox("Unix Socket Mode");
 								chckbxCLIMode.addActionListener(new ActionListener() {
 									public void actionPerformed(ActionEvent e) {
-										CLIMode = chckbxCLIMode.isSelected();
 										if (chckbxCLIMode.isSelected()) {
-											chckbxCLIMode.setText("Unix Socket Mode");
+											CLIMode = true;
+											chckbxNetMode.setSelected(false);
 										} else {
-											chckbxCLIMode.setText("Network Client Mode");
+											CLIMode = false;
+											chckbxNetMode.setSelected(true);
 										}
 									}
 								});
+								
+								chckbxNetMode = new JCheckBox("Network Client Mode");
+								chckbxNetMode.addActionListener(new ActionListener() {
+									public void actionPerformed(ActionEvent e) {
+										if (chckbxNetMode.isSelected()) {
+											CLIMode = false;
+											chckbxCLIMode.setSelected(false);
+										} else {
+											CLIMode = true;
+											chckbxCLIMode.setSelected(true);
+										}
+									}
+								});
+								panel.add(chckbxNetMode);
 								panel.add(chckbxCLIMode);
 								
 								
@@ -176,7 +193,6 @@ public class clientGUIMain {
 								btnConnect.setEnabled(false);
 		
 		textField = new JTextField();
-		textField.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		textField.addKeyListener(new KeyAdapter() {
 			
 			@Override
